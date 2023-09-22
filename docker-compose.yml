@@ -30,3 +30,13 @@ services:
     ports:
       - 14000:14000
     entrypoint: /mnt/scripts/entrypoint.sh
+  
+  ## This is only needed during setup
+  # See chapter 3.10 in the Distributed Installation Cookbook
+  setup-repo:
+    image: nginx
+    ports:
+      - 18000:80
+    volumes:
+      - ${H_ARIS_COM_INSTALL_FOLDER}:/www/data/
+      - ./conf/nginx/default.conf:/etc/nginx/conf.d/default.conf
