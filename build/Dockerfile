@@ -22,6 +22,7 @@ RUN microdnf -y update &&\
         logrotate \
         gettext \
         gzip \
+        hostname \
         java-11-openjdk-devel \
         less \
         nc \
