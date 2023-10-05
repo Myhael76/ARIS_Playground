@@ -1,11 +1,16 @@
 version: '3.9'
 
-volumes: 
-  aris_home: {}
+volumes:
+  # home and logs folder for aris design server installation via cloud agent in the aris box
+  aris_server_home: {}
   var-logs: {}
+  # common share for collaboration of scripts (wip)
+  common: {}
+
+# TODO: host kernel must be set for Elasticsearch, e.g. with the vm.max_map_count properly set to at least 262144
 
 services:
-  aris-box:
+  aris:
     image: my-aris-playground
     build:
       context: ./build
@@ -17,20 +22,19 @@ services:
       nofile:
         soft: 1048576
         hard: 1048576
+    hostname: aris
     volumes:
-      - ./scripts/:/mnt/scripts/
-      - aris_home:${ARIS_INSTALL_DIR}
+      - ./scripts/aris-server/:/mnt/scripts/
+      - aris_server_home:${ARIS_INSTALL_DIR}
       - var-logs:/var/logs/
+      - common:/mnt/common/
       - ${H_ARIS_INSTALLATION_BIN_CLOUD_AGENT}:/tmp/cloud-agent.rpm
       - ${H_ARIS_INSTALLATION_BIN_ACC}:/tmp/acc.rpm
-      - ${H_ARIS_INSTALLATION_BIN_ADMIN}:/tmp/admin.rpm
-      - ${H_ARIS_INSTALLATION_BIN_SCRIPT_RUNNER}:/tmp/script-runner.rpm
-    environment:
-      - name=value
     ports:
       - 14000:14000
     entrypoint: /mnt/scripts/entrypoint.sh
-  
+
+
   ## This is only needed during setup
   # See chapter 3.10 in the Distributed Installation Cookbook
   setup-repo:
